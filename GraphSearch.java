@@ -11,7 +11,7 @@ class GraphSearch {
              if(!(begin.isVisited)){
                  begin.isVisited = true;
                  myList.add(begin);
-                 for(Node next: myList){
+                 for(Node next: begin.neighbors){
                      dfsRecHelp(next, find, myList);
                  }
              }
