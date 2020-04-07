@@ -216,7 +216,8 @@ class GraphSearch {
       return BFTRecHelp(graph,search,queue);
   }
 
-  ArrayList<Node> BFTRecHelp(graph,search,queue)
+  ArrayList<Node> BFTRecHelp(graph,search,queue){
+  }
   
 */
   ArrayList<Node> BFTIter(Graph graph){
