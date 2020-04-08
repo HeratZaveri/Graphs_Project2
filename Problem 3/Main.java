@@ -45,7 +45,9 @@ class Graph {
         }
         return myNodes;
     }
-
+    Node getNodeAtIndx(int i){
+      return myAdjList.get(i);
+    }
     Node getNode(int value){
        Node found = null;
        for(Node get: myAdjList){
@@ -151,7 +153,7 @@ class Main {
             graph.addNode(i);
        }
        for(int i = 0; i < graph.myAdjList.size()-1; i++){
-            graph.addUndirectedEdge(graph.myAdjList.get(i), graph.myAdjList.get(i+1));
+            graph.addUndirectedEdge(graph.getNodeAtIndx(i), graph.getNodeAtIndx(i+1));
        }
        return graph;
   }
@@ -226,10 +228,10 @@ class GraphSearch {
       for(Node vertex: graph.getAllNodes()){
           if(!(vertex.isVisited)){
               vertex.isVisited = true;
-              myQueue.add(vertex);
+              myQueue.addLast(vertex);
               //vertex.isVisited = true;
               while(!(myQueue.isEmpty())){
-                  Node curr = myQueue.poll();
+                  Node curr = myQueue.removeFirst();
                   traversal.add(curr);
                   for(Node nextDoor: vertex.neighbors){
                       if(!(nextDoor.isVisited)){
