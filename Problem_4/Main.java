@@ -15,36 +15,38 @@ class Node {
 }
 
 public class Main{
-  /*
   public static void main(String[] args){
     ArrayList<Node> myList = new ArrayList<>();
     TopSort topSort = new TopSort();
     DirectedGraph myGraph = new DirectedGraph();
-    myGraph = createRandomDAG(10);
-    myGraph.printMyGraph();
+    myGraph = createRandomDAG(1000);
+    //myGraph.printMyGraph();
     System.out.println();
     //myList = topSort.mDFS(myGraph);
-    myList = topSort.khans(myGraph);
-    System.out.println(myList);
+    //myList = topSort.khans(myGraph);
+    //System.out.println(myList);
     for(Node some: myList){
       System.out.print(some.data + " ");
     }
 
   }
-  */
   static DirectedGraph createRandomDAG(final int n){
     //ArrayList<Integer> myList = new ArrayList<>();
     //Random rand = new Random();
     final DirectedGraph graph = new DirectedGraph();
+    HashSet<Node> seen = new HashSet<>();
     for(int i = 1; i < n; i++){
           graph.addNode(i);
     }
    for(Node first: graph.storageList){   
+       seen.add(first);
        int lower = ThreadLocalRandom.current().nextInt(1,Math.floorDiv(n, 2));
        int range = ThreadLocalRandom.current().nextInt(Math.floorDiv(n, 2)+1,n);
        List<Node> randomizedNodeList = createRandomList(graph.storageList,lower,range);
        for(Node second: randomizedNodeList){
-          graph.addDirectedEdge(first, second);
+         if(!seen.contains(second)){
+            graph.addDirectedEdge(first, second);
+         }
        }
      }
     return graph;
