@@ -11,6 +11,15 @@ class Node {
       this.neighbors = new HashMap<>();
     }
 }
+
+class NodeComparator implements Comparator<Node>{
+     public int compare(Node node1, Node node2){
+        if()
+
+        return 0;
+     }
+
+}
 class WeightedGraph {
     public List<Node> storageList;
          
@@ -35,7 +44,16 @@ class WeightedGraph {
     }
     Node getNodeAtIndx(int i){
         return storageList.get(i);
-     }
+    }
+    Node getNode(int value){
+        Node found = null;
+        for(Node get: storageList){
+          if(get.data == value){
+             found = get;
+          }
+        }
+        return found;
+    }
 
     boolean nextDoor(Node input1, Node input2){
         if(input1.neighbors.containsKey(input2) || input2.neighbors.containsKey(input1)){
