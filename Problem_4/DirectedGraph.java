@@ -46,6 +46,15 @@ class DirectedGraph {
           }
           System.out.println();
         }
-      } 
+    } 
+    Node getNode(int value){
+        Node found = null;
+        for(Node get: storageList){
+          if(get.data == value){
+             found = get;
+          }
+        }
+        return found;
+     }
       
 }

@@ -37,7 +37,7 @@ public class TopSort {
     HashMap<Node, Integer> inDegreeMapInitializer(final DirectedGraph graph){
          HashMap<Node,Integer> inDegreeMap = new HashMap<>();
 
-         for(Node value: graph.storageList){
+         for(Node value: graph.getAllNodes()){
              inDegreeMap.put(value, 0);
          }
 

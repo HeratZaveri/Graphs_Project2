@@ -17,9 +17,45 @@ class Node {
 public class Main{
   public static void main(String[] args){
     ArrayList<Node> myList = new ArrayList<>();
+    /*
+    DirectedGraph graph = new DirectedGraph();
+    graph.addNode(1);
+    graph.addNode(2);
+    graph.addNode(3);
+    graph.addNode(4);
+    graph.addNode(5);
+    graph.addNode(6);
+    graph.addNode(7);
+    graph.addNode(8);
+
+    Node one = graph.getNode(1);
+    Node two = graph.getNode(2);
+    Node three = graph.getNode(3);
+    Node four = graph.getNode(4);
+    Node five = graph.getNode(5);
+    Node six = graph.getNode(6);
+    Node seven = graph.getNode(7);
+    Node eight = graph.getNode(8);
+
+    graph.addDirectedEdge(one, two);
+    //graph.addDirectedEdge(one,three);
+    graph.addDirectedEdge(two, four);
+    graph.addDirectedEdge(three, four);
+    graph.addDirectedEdge(one, four);
+    graph.addDirectedEdge(three, five);
+    graph.addDirectedEdge(four, five);
+    graph.addDirectedEdge(four, six);
+    graph.addDirectedEdge(six, seven);
+    graph.addDirectedEdge(five, seven);
+    graph.addDirectedEdge(five, eight);
+    //graph.printMyGraph();
+    */
+    System.out.println();
     TopSort topSort = new TopSort();
-    DirectedGraph myGraph = new DirectedGraph();
-    myGraph = createRandomDAG(1000);
+    //myList = topSort.khans(graph);
+
+    //DirectedGraph myGraph = new DirectedGraph();
+    //myGraph = createRandomDAG(1000);
     //myGraph.printMyGraph();
     System.out.println();
     //myList = topSort.mDFS(myGraph);
@@ -40,8 +76,10 @@ public class Main{
     }
    for(Node first: graph.storageList){   
        seen.add(first);
-       int lower = ThreadLocalRandom.current().nextInt(1,Math.floorDiv(n, 2));
+       //sent lower and upperbound for range 
+       int lower = ThreadLocalRandom.current().nextInt(0,Math.floorDiv(n, 2));
        int range = ThreadLocalRandom.current().nextInt(Math.floorDiv(n, 2)+1,n);
+       //Return list
        List<Node> randomizedNodeList = createRandomList(graph.storageList,lower,range);
        for(Node second: randomizedNodeList){
          if(!seen.contains(second)){
@@ -55,8 +93,10 @@ public class Main{
  static List<Node> createRandomList(final List<Node> lst, int lower, int n){
     //create copy of list
     final List<Node> copyList = new ArrayList<Node>(lst);
+    //shuffle list
     Collections.shuffle(copyList);
     //System.out.println(copyList);
+    //return sublist in range
     return copyList.subList(lower,n);
   }
 }
