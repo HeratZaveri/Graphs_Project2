@@ -1,20 +1,39 @@
 import java.util.*;
+class NodeWithEdge{
+    public Node node;
+    public int weight;
 
+    public NodeWithEdge(Node node, int weight){
+        this.node = node;
+        this.weight = weight;
+    }
+
+    Node getNode(){
+        return node;
+    }
+}
 class Node {
     public int data;
-    public HashMap<Node, Integer> neighbors;
+    public List<NodeWithEdge> neighbors;
+    public List<Node> connected;
     public boolean isVisited;
   
     public Node(final int data) {
       this.data = data;
       this.isVisited = false;
-      this.neighbors = new HashMap<>();
+      this.neighbors = new ArrayList<>();
+      this.connected = new ArrayList<>();
     }
 }
 
-class NodeComparator implements Comparator<Node>{
-     public int compare(Node node1, Node node2){
-        if()
+class NodeComparator implements Comparator<NodeWithEdge>{
+     public int compare(NodeWithEdge node1, NodeWithEdge node2){
+        if(node1.weight <= node2.weight){
+            return 1;
+        }
+        else if(node1.weight > node2.weight){
+            return -1;
+        }
 
         return 0;
      }
@@ -28,18 +47,19 @@ class WeightedGraph {
     }
 
     void addNode(final int nodeVal){
-        final Node value = new Node(nodeVal);
+        Node value = new Node(nodeVal);
         storageList.add(value);
     }
 
     void addWeightedEdge(final Node first, final Node second, final int weight){
         if(storageList.contains(first) && storageList.contains(second) && (first.data != second.data) && !(nextDoor(first,second))){
-            first.neighbors.put(second,weight); 
+            first.neighbors.add(new NodeWithEdge(second,weight));
+            first.connected.add(second); 
         }       
      }
     void removeDirectedEdge(final Node first, final Node second, int weight){
         if(storageList.contains(first)&& storageList.contains(second) && (first.data != second.data) && nextDoor(first,second)){
-            first.neighbors.remove(second);     
+            first.connected.remove(second);     
          }
     }
     Node getNodeAtIndx(int i){
@@ -56,7 +76,7 @@ class WeightedGraph {
     }
 
     boolean nextDoor(Node input1, Node input2){
-        if(input1.neighbors.containsKey(input2) || input2.neighbors.containsKey(input1)){
+        if(input1.connected.contains(input2) || input2.connected.contains(input1)){
             return true;
         }
         return false;   

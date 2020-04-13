@@ -24,17 +24,17 @@ public class Main {
     Node seven = graph.getNode(7);
     Node eight = graph.getNode(8);
 
-    graph.addWeightedEdge(one, two, 2);
-    graph.addWeightedEdge(two, four,7);
-    graph.addWeightedEdge(one, three,6);
-    graph.addWeightedEdge(three, four,3);
-    graph.addWeightedEdge(one, four,5);
-    graph.addWeightedEdge(three, five,3);
-    graph.addWeightedEdge(four, five,2);
-    graph.addWeightedEdge(four, six, 4);
-    graph.addWeightedEdge(six, seven, 2);
-    graph.addWeightedEdge(five, seven,5);
-    graph.addWeightedEdge(five, eight,3);
+    graph.addWeightedEdge(one, two, 6);
+    graph.addWeightedEdge(two, three,5);
+    graph.addWeightedEdge(one, four,1);
+    graph.addWeightedEdge(two, five,2);
+    //graph.addWeightedEdge(one, four,5);
+    //graph.addWeightedEdge(three, five,3);
+    graph.addWeightedEdge(four, five,1);
+    graph.addWeightedEdge(four, two, 2);
+    //graph.addWeightedEdge(six, seven, 2);
+    graph.addWeightedEdge(five, three,5);
+    //graph.addWeightedEdge(five, eight,3);
     //graph.addUndirectedEdge(eight, five);
     //graph.printMyGraph();
     
@@ -61,21 +61,50 @@ public class Main {
        return graph;
 
     }
-    static HashMap<Node, Integer> dijkstras(final Node start){
-        HashMap<Node, Integer> dijkstra = new HashMap<>();
-        PriorityQueue<Node> pQueue = new PriorityQueue<>();
-        dijkstra.put(start, 0);
-        Node curr = start;
-        while(curr != null && dijkstra.containsKey(curr)){
-            for(Node neighbor: curr.neighbors.keySet()){
-                if(!(neighbor.isVisited)){
-                    dijkstra.put(neighbor, dijkstra.getOrDefault(neighbor, 0) + curr.neighbors.get(neighbor));
-                    pQueue.add(neighbor);
+    static HashMap<Node, Integer> dijkstras(Node start){
+        HashMap<Node, Integer> distance = new HashMap<>();
+        PriorityQueue<NodeWithEdge> pQueue = new PriorityQueue<NodeWithEdge>(11, new NodeComparator());
+        distance.put(start, 0);
+        pQueue.add(new NodeWithEdge(start, 0));
+        //Node curr = start;
+        while(!(pQueue.isEmpty())){
+            NodeWithEdge currnt = pQueue.poll();
+            Node curr = currnt.getNode();
+            curr.isVisited = true;
+            for(NodeWithEdge neighbor: curr.neighbors){
+                int tempDistance = currnt.weight + neighbor.weight;
+                //check if our map contains the node and if it isnt visited
+                if(distance.containsKey(neighbor.node) && !(neighbor.node.isVisited)){
+                    //we need to check if current path is less than original path
+                    if(tempDistance < distance.get(neighbor.node)){
+                        distance.put(neighbor.node, tempDistance);
+                        //set it as visited
+                        neighbor.node.isVisited = true;
+
+                    }
                 }
+                else{
+                    distance.put(neighbor.node,tempDistance);
+                    pQueue.add(neighbor);
+                }              
             }
-           curr = pQueue.poll();
+        }
+        return distance;
+    }
+
+    GridGraph createRandomGridGraph(int n){
+        GridGraph grid = new GridGraph();   
+        for(int i = 0; i <= n; i++){
+            for(int j = 0; j <= n; j++){
+                grid.addGridNode(i, j, i);
+            }
         }
 
-        return dijkstra;
+        for(int i = 0; i < grid.maze.size(); i++){
+            for(int j = 0; j < grid.maze.size(); j++){
+                grid.addGridNode(i, j, i);
+            }
+        }
+        return grid;
     }
 }
