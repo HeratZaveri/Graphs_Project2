@@ -1,28 +1,33 @@
 import java.util.*;
 
 class DirectedGraph {
-    public List<Node> storageList;
+    public ArrayList<Node> storageList;
          
     public DirectedGraph() {
         this.storageList = new ArrayList<>();
     }
 
     void addNode(final int nodeVal){
-        final Node value = new Node(nodeVal);
+        Node value = new Node(nodeVal);
         storageList.add(value);
     }
 
     void addDirectedEdge(final Node first, final Node second){
-        if(storageList.contains(first) && storageList.contains(second) && (first.data != second.data) && !(nextDoor(first,second))){
+        if(storageList.contains(first) && storageList.contains(second) && notTheSame(first, second) && !(nextDoor(first,second))){
             first.neighbors.add(second); 
         }       
      }
     void removeDirectedEdge(final Node first, final Node second){
-        if(storageList.contains(first) && storageList.contains(second) && (first.data != second.data) && nextDoor(first,second)){
+        if(storageList.contains(first) && storageList.contains(second) && notTheSame(first, second) && nextDoor(first,second)){
             first.neighbors.remove(second);
         }
     }
-
+    boolean notTheSame(Node input1, Node input2){
+        if(input1.data == input2.data){
+            return false;
+        }
+        return true;
+    }
     boolean nextDoor(Node input1, Node input2){
         if(input1.neighbors.contains(input2) || input2.neighbors.contains(input1)){
             return true;
@@ -38,10 +43,17 @@ class DirectedGraph {
             }
             return myNodes;
     }  
+    void removeCommonNodes(Node second, Node first){
+        for(int i = 0; i < second.neighbors.size(); i++){
+            if(second.neighbors.get(i).neighbors.contains(first)){
+                removeDirectedEdge(second.neighbors.get(i),first);
+            }
+        }
+    }
     void printMyGraph(){
-        for(final Node myNode: storageList){
+        for(Node myNode: storageList){
           System.out.print(myNode.data + ": ");
-          for(final Node adjacent: myNode.neighbors){
+          for(Node adjacent: myNode.neighbors){
              System.out.print(adjacent.data + " ");
           }
           System.out.println();

@@ -4,7 +4,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 class Node {
     public int data;
-    public List<Node> neighbors;
+    public ArrayList<Node> neighbors;
     public boolean isVisited;
   
     public Node(final int data) {
@@ -50,46 +50,55 @@ public class Main{
     graph.addDirectedEdge(five, eight);
     //graph.printMyGraph();
     */
-    System.out.println();
-    TopSort topSort = new TopSort();
-    //myList = topSort.khans(graph);
 
-    //DirectedGraph myGraph = new DirectedGraph();
-    //myGraph = createRandomDAG(1000);
-    //myGraph.printMyGraph();
+    /*
+    TopSort topSort = new TopSort();
+
+    DirectedGraph myGraph = new DirectedGraph();
+    myGraph = createRandomDAG(10);
+
+    myGraph.printMyGraph();
     System.out.println();
+
     //myList = topSort.mDFS(myGraph);
     //myList = topSort.khans(myGraph);
     //System.out.println(myList);
+    
     for(Node some: myList){
       System.out.print(some.data + " ");
     }
-
+    */
   }
   static DirectedGraph createRandomDAG(final int n){
     //ArrayList<Integer> myList = new ArrayList<>();
     //Random rand = new Random();
-    final DirectedGraph graph = new DirectedGraph();
-    HashSet<Node> seen = new HashSet<>();
+    DirectedGraph graph = new DirectedGraph();
+    HashSet<Node> lastSeen = new HashSet<>();
     for(int i = 1; i < n; i++){
           graph.addNode(i);
     }
    for(Node first: graph.storageList){   
-       seen.add(first);
+       lastSeen.add(first);
        //sent lower and upperbound for range 
-       int lower = ThreadLocalRandom.current().nextInt(0,Math.floorDiv(n, 2));
-       int range = ThreadLocalRandom.current().nextInt(Math.floorDiv(n, 2)+1,n);
+       int lower = ThreadLocalRandom.current().nextInt(0,Math.floorDiv(n,2));
+       int range = ThreadLocalRandom.current().nextInt(Math.floorDiv(n,2)+1,n);
+       List<Node> copyList = new ArrayList<Node>(graph.storageList);
+       Collections.shuffle(copyList);
        //Return list
-       List<Node> randomizedNodeList = createRandomList(graph.storageList,lower,range);
+       List<Node> randomizedNodeList = copyList.subList(lower,range);
        for(Node second: randomizedNodeList){
-         if(!seen.contains(second)){
+         if(lastSeen.contains(second) && !(second.neighbors.contains(first))){
             graph.addDirectedEdge(first, second);
+            graph.removeCommonNodes(second,first);
+         }
+         else if(!(lastSeen.contains(second))){
+           graph.addDirectedEdge(first, second);
          }
        }
      }
     return graph;
  }
-
+ /*
  static List<Node> createRandomList(final List<Node> lst, int lower, int n){
     //create copy of list
     final List<Node> copyList = new ArrayList<Node>(lst);
@@ -99,4 +108,5 @@ public class Main{
     //return sublist in range
     return copyList.subList(lower,n);
   }
+  */
 }
