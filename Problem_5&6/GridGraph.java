@@ -3,13 +3,15 @@ import java.util.*;
 class GridNode{
     public int x;
     public int y;
-    public int data;
+    //public int data;
+    boolean isVisited;
     List<GridNode> neighbors;
 
-    public GridNode(int x, int y, int data){
+    public GridNode(int x, int y){
         this.x = x;
         this.y = y;
-        this.data = data;
+        this.isVisited = false;
+        //this.data = data;
         this.neighbors = new ArrayList<>();
     }
 }
@@ -21,19 +23,23 @@ class GridGraph{
         this.maze = new ArrayList<>();
     }
 
-    void addGridNode(int x, int y, int nodeVal){
-         GridNode value = new GridNode(x, y, nodeVal);
+    void addGridNode(int x, int y){
+         GridNode value = new GridNode(x, y);
          maze.add(value);
     }
 
     void addUndirectedEdge(GridNode first, GridNode second){
         if(validDirection(first, second) && notTheSame(first, second) && !(nextDoor(first, second))){
             first.neighbors.add(second);
-            second.neighbors.add(second);
+            second.neighbors.add(first);
         }
     }
 
     void removeUndirectedEdge(GridNode first, GridNode second){
+        if(notTheSame(first, second) && nextDoor(first, second)){
+            first.neighbors.remove(second);
+            second.neighbors.remove(first);
+        }
 
     }
 
@@ -54,7 +60,7 @@ class GridGraph{
         return false;
     }
     boolean notTheSame(GridNode input1, GridNode input2){
-        if(input1.data == input2.data){
+        if((input1.x == input2.x) && (input1.y == input2.y)){
             return false;
         }
         return true;
@@ -79,6 +85,12 @@ class GridGraph{
         if(node1.x + 1 == node2.x && node1.y == node2.y){
             return true;
         }
+
         return false;
     }
+
+    GridNode getNodeAtIndx(int i){
+        return maze.get(i);
+    }
+
 }

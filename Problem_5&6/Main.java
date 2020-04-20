@@ -1,5 +1,24 @@
 import java.util.*;
-//import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.ThreadLocalRandom;
+
+class pairsOfDistances{
+    
+    public int distanceSoFar;
+    public int heuristic;
+
+    public pairsOfDistances(int distance, int heuristic){
+        this.distanceSoFar = distance;
+        this.heuristic = heuristic;
+    }
+
+    int getDistSoFar(){
+        return distanceSoFar;
+    }
+
+    int heuristic(){
+        return heuristic;
+    }
+}
 
 public class Main {
     public static void main(String[] args){
@@ -96,15 +115,49 @@ public class Main {
         GridGraph grid = new GridGraph();   
         for(int i = 0; i <= n; i++){
             for(int j = 0; j <= n; j++){
-                grid.addGridNode(i, j, i);
+                grid.addGridNode(i, j);
             }
         }
 
         for(int i = 0; i < grid.maze.size(); i++){
             for(int j = 0; j < grid.maze.size(); j++){
-                grid.addGridNode(i, j, i);
+                grid.addGridNode(i, j);
+            }
+        }
+
+        for(GridNode first: grid.maze){
+            ArrayList<GridNode> copy = new ArrayList<>(grid.getAllNodes());
+            Collections.shuffle(copy);
+            int lower = ThreadLocalRandom.current().nextInt(1,Math.floorDiv(n, 2));
+            int range = ThreadLocalRandom.current().nextInt(Math.floorDiv(n, 2)+1,n);
+            List<GridNode> random = copy.subList(lower, range);
+            for(GridNode second: random){
+                grid.addUndirectedEdge(first,second);
             }
         }
         return grid;
     }
+
+    ArrayList<GridNode> astar(GridNode sourceNode, GridNode destNode){
+        ArrayList<GridNode> aStarPath = new ArrayList<>();
+        HashMap<GridNode,pairsOfDistances> myMap = new HashMap<>();
+
+        int heuristic = heuristicManhattan(sourceNode, destNode);
+        pairsOfDistances pair = new pairsOfDistances(0, heuristic);
+        myMap.put(sourceNode,pair);
+
+        GridNode curr = sourceNode;
+        while(curr != destNode){
+            curr.isVisited = true;
+            aStarPath.add(curr);
+        }
+        return aStarPath;
+    }
+
+    int heuristicManhattan(GridNode currentSqr, GridNode goal){
+        int manhattanDistance = Math.abs(currentSqr.x - goal.x) + Math.abs(currentSqr.y - goal.y);
+        return manhattanDistance;
+    }
+
+    
 }
