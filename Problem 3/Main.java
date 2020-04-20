@@ -24,13 +24,15 @@ class Graph {
         myAdjList.add(value);
     }
     void addUndirectedEdge(final Node first, final Node second){
-        if(myAdjList.contains(first) && myAdjList.contains(second) && notTheSame(first,second) && !(adjacent(first, second))){
+        if(myAdjList.contains(first) && myAdjList.contains(second) && notTheSame(first,second) && !(first.neighbors.contains(second))){
             first.neighbors.add(second);
+          if(!(second.neighbors.contains(first))){
             second.neighbors.add(first);
+          }
         }
     }
     void removeUndirectedEdge(final Node first, final Node second){
-        if(myAdjList.contains(first) && myAdjList.contains(second) && notTheSame(first,second) && adjacent(first, second)){
+        if(myAdjList.contains(first) && myAdjList.contains(second) && notTheSame(first,second)){
             first.neighbors.remove(second);
             second.neighbors.remove(first);
         }
@@ -57,18 +59,11 @@ class Graph {
        }
        return found;
     }
-
     boolean notTheSame(final Node input1, final Node input2){
       if(input1.data == input2.data){
         return false;
       }
       return true;
-    }
-    static boolean adjacent(final Node first, final Node second){
-      if(first.neighbors.contains(second) && second.neighbors.contains(first)){
-        return true;
-      }
-      return false;
     }
     void printMyGraph(){
       for(final Node myNode: myAdjList){
@@ -105,16 +100,16 @@ class Main {
     Node seven = graph.getNode(7);
     Node eight = graph.getNode(8);
 
-    graph.addUndirectedEdge(one, two);
-    graph.addUndirectedEdge(one,three);
-    graph.addUndirectedEdge(two, four);
-    graph.addUndirectedEdge(three, four);
-    graph.addUndirectedEdge(three, five);
-    graph.addUndirectedEdge(four, five);
-    graph.addUndirectedEdge(four, six);
-    graph.addUndirectedEdge(three, seven);
-    graph.addUndirectedEdge(five, seven);
-    graph.addUndirectedEdge(five, eight);
+    graph.addDirectedEdge(one, two);
+    graph.addDirectedEdge(two, four);
+    graph.addDirectedEdge(three, four);
+    graph.addDirectedEdge(one, four);
+    graph.addDirectedEdge(three, five);
+    graph.addDirectedEdge(four, five);
+    graph.addDirectedEdge(four, six);
+    graph.addDirectedEdge(six, seven);
+    graph.addDirectedEdge(five, seven);
+    graph.addDirectedEdge(five, eight);
     //graph.addUndirectedEdge(eight, five);
     graph.printMyGraph();
     
@@ -133,14 +128,15 @@ class Main {
        //ArrayList<Integer> myList = new ArrayList<>();
        //Random rand = new Random();
        final Graph graph = new Graph();
+
        for(int i = 1; i < n; i++){
              graph.addNode(i);
        }
-      for(final Node first: graph.myAdjList){   
-        final int lower = ThreadLocalRandom.current().nextInt(1,Math.floorDiv(n, 2));
-        final int range = ThreadLocalRandom.current().nextInt(Math.floorDiv(n, 2)+1,n);
-        final List<Node> randomizedNodeList = createRandomList(graph.myAdjList,lower,range);
-         for(final Node second: randomizedNodeList){
+      for(Node first: graph.myAdjList){   
+        int lower = ThreadLocalRandom.current().nextInt(1,Math.floorDiv(n, 2));
+        int range = ThreadLocalRandom.current().nextInt(Math.floorDiv(n, 2)+1,n);
+        List<Node> randomizedNodeList = createRandomList(graph.myAdjList,lower,range);
+         for(Node second: randomizedNodeList){
               graph.addUndirectedEdge(first, second);
          }
       }
@@ -160,7 +156,7 @@ class Main {
   //randomize my list to create random graph in specified range
   static List<Node> createRandomList(final List<Node> lst,final int lower, final int n){
          //create copy of list
-         final List<Node> copyList = new ArrayList<Node>(lst);
+         List<Node> copyList = new ArrayList<Node>(lst);
          Collections.shuffle(copyList);
          //System.out.println(copyList);
          return copyList.subList(lower,n);
@@ -169,9 +165,7 @@ class Main {
 
 class GraphSearch {
 
-  public GraphSearch(){
-
-  }
+  public GraphSearch(){}
 
   ArrayList<Node> DFSRec(final Node start, final Node end){
       ArrayList<Node> search = new ArrayList<Node>();
@@ -200,7 +194,7 @@ class GraphSearch {
           curr.isVisited = true;
           search.add(curr);
           if(curr.data == end.data){
-              return search;
+              break;
           } 
           for(Node nextDoor: curr.neighbors){
               if(!(nextDoor.isVisited)){
