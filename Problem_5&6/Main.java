@@ -1,24 +1,7 @@
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-class pairsOfDistances{
-    
-    public int distanceSoFar;
-    public int heuristic;
 
-    public pairsOfDistances(int distance, int heuristic){
-        this.distanceSoFar = distance;
-        this.heuristic = heuristic;
-    }
-
-    int getDistSoFar(){
-        return distanceSoFar;
-    }
-
-    int heuristic(){
-        return heuristic;
-    }
-}
 
 public class Main {
     public static void main(String[] args){
@@ -97,9 +80,6 @@ public class Main {
                     //we need to check if current path is less than original path
                     if(tempDistance < distance.get(neighbor.node)){
                         distance.put(neighbor.node, tempDistance);
-                        //set it as visited
-                        neighbor.node.isVisited = true;
-
                     }
                 }
                 else{
@@ -140,16 +120,41 @@ public class Main {
 
     ArrayList<GridNode> astar(GridNode sourceNode, GridNode destNode){
         ArrayList<GridNode> aStarPath = new ArrayList<>();
-        HashMap<GridNode,pairsOfDistances> myMap = new HashMap<>();
+        //HashMap<GridNode, PairsOfDistances> myMap = new HashMap<>();
+        Queue<GridNode> shortestMove = new PriorityQueue<>();
 
         int heuristic = heuristicManhattan(sourceNode, destNode);
-        pairsOfDistances pair = new pairsOfDistances(0, heuristic);
-        myMap.put(sourceNode,pair);
+        PairsOfDistances pair = new PairsOfDistances(0, heuristic);
+        sourceNode.setPairs(pair);
 
         GridNode curr = sourceNode;
+        //run till we dont reach our dest node
         while(curr != destNode){
+            //finalize curr
             curr.isVisited = true;
             aStarPath.add(curr);
+            //iterate over all of curr's neighboors
+            for(GridNode neighboor: curr.neighbors){
+                //if neighbr not finalized
+                if(!(neighboor.isVisited)){
+                    int neighborHeuristic = heuristicManhattan(neighboor, destNode);
+                    int distance = curr.pairs.getDistSoFar() + calculateDistance(curr,neighboor);
+                    //if not in map add it
+                    if(neighboor.pairs == null){
+                        neighboor.parent = curr;
+                        neighboor.pairs = new PairsOfDistances(distance, neighborHeuristic);
+                        shortestMove.add(neighboor);
+                    }
+                    //if we have seen check its distance and set g+h 
+                    if(neighboor.pairs != null){
+                      if(distance < neighboor.pairs.getDistSoFar()){
+                            neighboor.parent = curr;
+                            neighboor.pairs.setDistanceSoFar(distance);
+                            neighboor.pairs.setDistPlsHeurstc();
+                      }
+                    }
+                }
+            }
         }
         return aStarPath;
     }
@@ -157,6 +162,11 @@ public class Main {
     int heuristicManhattan(GridNode currentSqr, GridNode goal){
         int manhattanDistance = Math.abs(currentSqr.x - goal.x) + Math.abs(currentSqr.y - goal.y);
         return manhattanDistance;
+    }
+
+    int calculateDistance(GridNode curr, GridNode nextDoorNeigbhor){
+        int distance = Math.abs(nextDoorNeigbhor.x - curr.x) + Math.abs(nextDoorNeigbhor.y - curr.y);
+        return distance;
     }
 
     
