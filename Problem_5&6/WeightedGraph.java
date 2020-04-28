@@ -47,8 +47,8 @@ class WeightedGraph {
     }
 
     void addNode(final int nodeVal){
-        Node value = new Node(nodeVal);
-        storageList.add(value);
+        Node val = new Node(nodeVal);
+        storageList.add(val);
     }
 
     void addWeightedEdge(final Node first, final Node second, final int weight){
@@ -74,7 +74,16 @@ class WeightedGraph {
         }
         return found;
     }
-
+    /*
+    //needs fixing
+    void removeCommonNodes(Node second, Node first){
+        for(int i = 0; i < second.neighbors.size(); i++){
+            if(second.neighbors.get(i).neighbors.contains(first)){
+                removeDirectedEdge(second.neighbors.get(i),first);
+            }
+        }
+    }
+    */
     boolean nextDoor(Node input1, Node input2){
         if(input1.connected.contains(input2) || input2.connected.contains(input1)){
             return true;

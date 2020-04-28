@@ -1,6 +1,7 @@
 import java.util.*;
-
-class GridNode{
+import java.util.concurrent.ThreadLocalRandom;
+ 
+class GridNode implements Comparable<GridNode>{
     public int x;
     public int y;
     boolean isVisited;
@@ -19,6 +20,16 @@ class GridNode{
 
     void setPairs(PairsOfDistances p){
         this.pairs = p;
+    }
+
+    public int compareTo(GridNode other){
+        if(this.pairs.gPlusH > other.pairs.gPlusH){
+            return 1;
+        }
+        if(this.pairs.gPlusH < other.pairs.gPlusH){
+            return -1;
+        }
+        return 0;
     }
 }
 class PairsOfDistances{
@@ -103,6 +114,28 @@ class GridGraph{
             return false;
         }
         return true;
+    }
+
+    void printGrid(){
+        for(GridNode myNode: maze){
+            System.out.print("(" + myNode.x + "," + myNode.y + "): ");
+            for(GridNode next: myNode.neighbors){
+                System.out.print("(" + next.x + "," + next.y + ")" + " ");
+            }
+            System.out.println();
+        }
+        //System.out.println();
+    }
+    List<GridNode> getRandomCandidateNodes(GridNode input){
+        List<GridNode> possible = new ArrayList<>();
+        for(GridNode candidate: maze){
+            if(validDirection(input, candidate) && notTheSame(input, candidate)){
+                possible.add(candidate);
+            }
+        }
+        Collections.shuffle(possible);
+        int lowr = ThreadLocalRandom.current().nextInt(1,(possible.size()));
+        return possible.subList(0,lowr);
     }
 
     boolean validDirection(GridNode node1, GridNode node2){

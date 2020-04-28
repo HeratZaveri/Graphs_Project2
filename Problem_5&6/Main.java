@@ -1,10 +1,9 @@
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-
-
 public class Main {
     public static void main(String[] args){
+    /*
     HashMap<Node,Integer> map =  new HashMap<>();
     //GraphSearch tools = new GraphSearch();
     WeightedGraph graph = new WeightedGraph();
@@ -44,16 +43,63 @@ public class Main {
     for(Node value: map.keySet()){
       System.out.println(value.data + ": " + map.get(value));
     }
+    */
+
+    /*
+    GridGraph grid = createRandomGridGraph(100);
+    //grid.printGrid();
+
+    //System.out.println();
+    GridNode source = grid.getNodeAtIndx(0);
+    System.out.println("Source Node: " + "("+ dest.x + "," + dest.y+") ");
+    GridNode dest = grid.getNodeAtIndx(grid.maze.size()-1);
+    System.out.println("Dest Node: ""("+ dest.x + "," + dest.y+") ");
+    System.out.println("Problem 6c A* Path: ");
+    ArrayList<GridNode> star = aStar(source, dest);
     System.out.println();
+    System.out.print("[ ");
+    for (GridNode node: star){
+        System.out.print("("+node.x + "," + node.y+") ");
+    }
+    System.out.print(" ]");
+    //System.out.println(star);
+    */
 
     }
     /*
-    WeightedGraph createRandomCompleteWeightedGraph(int n){
+    Fix This:
+    static WeightedGraph createRandomCompleteWeightedGraph(int n){
+        WeightedGraph graph = new WeightedGraph();
+        Set<Node> sawIt = new HashSet<>();
+        for(int i = 1; i <= n; i++){
+            graph.addNode(i);
+        }
+        for(Node first: graph.getAllNodes()){
+            sawIt.add(first);
+            //sent lower and upperbound for range 
+            int randomWeight = ThreadLocalRandom.current().nextInt(1,10);
+            int lower = ThreadLocalRandom.current().nextInt(0,Math.floorDiv(n,2));
+            int range = ThreadLocalRandom.current().nextInt(Math.floorDiv(n,2)+1,n);
+            List<Node> copyList = new ArrayList<Node>(graph.storageList);
+            Collections.shuffle(copyList);
+            //Return list
+            List<Node> randomizedNodeList = copyList.subList(lower,range);
+            for(Node second: randomizedNodeList){
+                if(sawIt.contains(second) && !(second.neighbors.contains(first))){
+                    graph.addWeightedEdge(first, second,randomWeight);
+                    graph.removeCommonNodes(second,first);
+                }
+                else if(!(sawIt.contains(second))){
+                    graph.addWeightedEdge(first, second,randomWeight);
+                }      
+       }
+            
+        }
     }
     */
 
-    WeightedGraph createLinkedList(int n){
-        WeightedGraph graph = new WeightedGraph();
+    static WeightedGraph createLinkedList(int n){
+       WeightedGraph graph = new WeightedGraph();
        for(int i = 1; i < n; i++){
             graph.addNode(i);
        }
@@ -91,7 +137,7 @@ public class Main {
         return distance;
     }
 
-    GridGraph createRandomGridGraph(int n){
+    static GridGraph createRandomGridGraph(int n){
         GridGraph grid = new GridGraph();   
         for(int i = 0; i <= n; i++){
             for(int j = 0; j <= n; j++){
@@ -99,26 +145,17 @@ public class Main {
             }
         }
 
-        for(int i = 0; i < grid.maze.size(); i++){
-            for(int j = 0; j < grid.maze.size(); j++){
-                grid.addGridNode(i, j);
-            }
-        }
-
         for(GridNode first: grid.maze){
-            ArrayList<GridNode> copy = new ArrayList<>(grid.getAllNodes());
-            Collections.shuffle(copy);
-            int lower = ThreadLocalRandom.current().nextInt(1,Math.floorDiv(n, 2));
-            int range = ThreadLocalRandom.current().nextInt(Math.floorDiv(n, 2)+1,n);
-            List<GridNode> random = copy.subList(lower, range);
+            List<GridNode> random = grid.getRandomCandidateNodes(first);
+            //System.out.println(random);
             for(GridNode second: random){
                 grid.addUndirectedEdge(first,second);
             }
         }
         return grid;
     }
-
-    ArrayList<GridNode> astar(GridNode sourceNode, GridNode destNode){
+    //More testing required
+    static ArrayList<GridNode> aStar(GridNode sourceNode, GridNode destNode){
         ArrayList<GridNode> aStarPath = new ArrayList<>();
         //HashMap<GridNode, PairsOfDistances> myMap = new HashMap<>();
         Queue<GridNode> shortestMove = new PriorityQueue<>();
@@ -126,13 +163,12 @@ public class Main {
         int heuristic = heuristicManhattan(sourceNode, destNode);
         PairsOfDistances pair = new PairsOfDistances(0, heuristic);
         sourceNode.setPairs(pair);
-
+        aStarPath.add(sourceNode);
         GridNode curr = sourceNode;
         //run till we dont reach our dest node
         while(curr != destNode){
             //finalize curr
             curr.isVisited = true;
-            aStarPath.add(curr);
             //iterate over all of curr's neighboors
             for(GridNode neighboor: curr.neighbors){
                 //if neighbr not finalized
@@ -148,23 +184,28 @@ public class Main {
                     //if we have seen check its distance and set g+h 
                     if(neighboor.pairs != null){
                       if(distance < neighboor.pairs.getDistSoFar()){
+                            shortestMove.remove(neighboor);
                             neighboor.parent = curr;
                             neighboor.pairs.setDistanceSoFar(distance);
                             neighboor.pairs.setDistPlsHeurstc();
+                            shortestMove.add(neighboor);
                       }
                     }
                 }
             }
+            curr = shortestMove.poll();
+            //System.out.println();
+            aStarPath.add(curr);
         }
         return aStarPath;
     }
 
-    int heuristicManhattan(GridNode currentSqr, GridNode goal){
+    static int heuristicManhattan(GridNode currentSqr, GridNode goal){
         int manhattanDistance = Math.abs(currentSqr.x - goal.x) + Math.abs(currentSqr.y - goal.y);
         return manhattanDistance;
     }
 
-    int calculateDistance(GridNode curr, GridNode nextDoorNeigbhor){
+    static int calculateDistance(GridNode curr, GridNode nextDoorNeigbhor){
         int distance = Math.abs(nextDoorNeigbhor.x - curr.x) + Math.abs(nextDoorNeigbhor.y - curr.y);
         return distance;
     }
