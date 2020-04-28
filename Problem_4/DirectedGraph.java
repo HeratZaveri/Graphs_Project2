@@ -43,6 +43,7 @@ class DirectedGraph {
             }
             return myNodes;
     }  
+    //removes cycles becuase its DAG - acyclic no common neighboors otherwise we get cycle
     void removeCommonNodes(Node second, Node first){
         for(int i = 0; i < second.neighbors.size(); i++){
             if(second.neighbors.get(i).neighbors.contains(first)){

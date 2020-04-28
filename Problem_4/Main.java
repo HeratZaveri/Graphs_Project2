@@ -68,17 +68,19 @@ public class Main{
       System.out.print(some.data + " ");
     }
     */
+
+    
   }
   static DirectedGraph createRandomDAG(final int n){
     //ArrayList<Integer> myList = new ArrayList<>();
     //Random rand = new Random();
     DirectedGraph graph = new DirectedGraph();
-    HashSet<Node> lastSeen = new HashSet<>();
+    HashSet<Node> sawIt = new HashSet<>();
     for(int i = 1; i < n; i++){
           graph.addNode(i);
     }
    for(Node first: graph.storageList){   
-       lastSeen.add(first);
+       sawIt.add(first);
        //sent lower and upperbound for range 
        int lower = ThreadLocalRandom.current().nextInt(0,Math.floorDiv(n,2));
        int range = ThreadLocalRandom.current().nextInt(Math.floorDiv(n,2)+1,n);
@@ -87,11 +89,13 @@ public class Main{
        //Return list
        List<Node> randomizedNodeList = copyList.subList(lower,range);
        for(Node second: randomizedNodeList){
-         if(lastSeen.contains(second) && !(second.neighbors.contains(first))){
+         //second predecessor node but not neighboor of current noe -first
+         if(sawIt.contains(second) && !(second.neighbors.contains(first))){
             graph.addDirectedEdge(first, second);
             graph.removeCommonNodes(second,first);
          }
-         else if(!(lastSeen.contains(second))){
+         //if we never saw the second node
+         else if(!(sawIt.contains(second))){
            graph.addDirectedEdge(first, second);
          }
        }
