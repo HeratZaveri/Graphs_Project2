@@ -16,7 +16,8 @@ class Node {
 
 public class Main{
   public static void main(String[] args){
-    ArrayList<Node> myList = new ArrayList<>();
+    ArrayList<Node> myListmDfs = new ArrayList<>();
+    ArrayList<Node> myListKhans = new ArrayList<>();
     /*
     DirectedGraph graph = new DirectedGraph();
     graph.addNode(1);
@@ -51,25 +52,25 @@ public class Main{
     //graph.printMyGraph();
     */
 
-    /*
+
     TopSort topSort = new TopSort();
 
-    DirectedGraph myGraph = new DirectedGraph();
-    myGraph = createRandomDAG(10);
+    DirectedGraph myGraph = createRandomDAG(1000);
+    DirectedGraph myGraphKhans = createRandomDAG(10);
 
-    myGraph.printMyGraph();
+    //myGraph.printMyGraph();
     System.out.println();
-
-    //myList = topSort.mDFS(myGraph);
-    //myList = topSort.khans(myGraph);
-    //System.out.println(myList);
-    
-    for(Node some: myList){
+    //System.out.println("Modified DFS: ");
+    //myListmDfs = topSort.mDFS(myGraph);  
+    for(Node some: myListmDfs){
       System.out.print(some.data + " ");
     }
-    */
 
-    
+    System.out.println("Khans Algorithm: ");
+    myListKhans = topSort.khans(myGraphKhans);
+    for(Node some: myListKhans){
+      System.out.print(some.data + " ");
+    } 
   }
   static DirectedGraph createRandomDAG(final int n){
     //ArrayList<Integer> myList = new ArrayList<>();
@@ -102,15 +103,5 @@ public class Main{
      }
     return graph;
  }
- /*
- static List<Node> createRandomList(final List<Node> lst, int lower, int n){
-    //create copy of list
-    final List<Node> copyList = new ArrayList<Node>(lst);
-    //shuffle list
-    Collections.shuffle(copyList);
-    //System.out.println(copyList);
-    //return sublist in range
-    return copyList.subList(lower,n);
-  }
-  */
+ 
 }
